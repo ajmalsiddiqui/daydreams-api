@@ -1,0 +1,43 @@
+from flask import Flask, request, json
+
+from app import app
+
+from services.image_search.main import get_image_urls
+
+@app.route('/get-images')
+def get_images():
+  '''
+  Takes a query keyword/string as a parameter and returns a list of images specified by the image_count parameter
+
+  Default count is 5
+  '''
+  count = request.args.get('count') if request.args.get('count') else 5
+  query = request.args.get('query')
+
+  status = 200
+  response = {}
+
+  if not query or query == '':
+    status = 400
+    response = {
+      'status': 400,
+      'message': 'Missing required parameters: query'
+    }
+  else:
+    num_urls, urls = get_image_urls(query)
+    if num_urls == 0:
+      response = {
+        'status': 200,
+        'message': 'No images found for query "{}"'.format(query)
+      }
+    else:
+      if num_urls > count:
+        urls = urls[:count]
+        num_urls = count
+      response = {
+        'status': 200,
+        'message': 'Image search successful!',
+        'num_images': num_urls,
+        'images': urls
+      }
+  return json.dumps(response), status
