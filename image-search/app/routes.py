@@ -4,6 +4,10 @@ from app import app
 
 from services.image_search.main import get_image_urls
 
+@app.route('/')
+def index():
+  return 'Hello from DayDreams!', 200
+
 @app.route('/get-images')
 def get_images():
   '''
