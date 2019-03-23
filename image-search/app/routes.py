@@ -22,6 +22,8 @@ def get_images():
     count = int(request.args.get('count')) if request.args.get('count') else 5
     query = request.args.get('query')
 
+    print(request.args.get('count'))
+
     if not query or query == '':
       status = 400
       response = {
