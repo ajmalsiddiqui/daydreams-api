@@ -15,7 +15,7 @@ def get_images():
 
   Default count is 5
   '''
-  count = request.args.get('count') if request.args.get('count') else 5
+  count = int(request.args.get('count')) if request.args.get('count') else 5
   query = request.args.get('query')
 
   status = 200
