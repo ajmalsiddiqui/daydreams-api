@@ -45,7 +45,7 @@ def get_images():
           'num_images': num_urls,
           'images': urls
         }
-  except e:
+  except Exception as e:
     status = 500
     response = {
       'status': 500,
