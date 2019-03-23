@@ -15,34 +15,41 @@ def get_images():
 
   Default count is 5
   '''
-  print(request.args.get('count'))
-  count = int(request.args.get('count')) if request.args.get('count') else 5
-  query = request.args.get('query')
-
   status = 200
   response = {}
 
-  if not query or query == '':
-    status = 400
-    response = {
-      'status': 400,
-      'message': 'Missing required parameters: query'
-    }
-  else:
-    num_urls, urls = get_image_urls(query)
-    if num_urls == 0:
+  try:
+    count = int(request.args.get('count')) if request.args.get('count') else 5
+    query = request.args.get('query')
+
+    if not query or query == '':
+      status = 400
       response = {
-        'status': 200,
-        'message': 'No images found for query "{}"'.format(query)
+        'status': 400,
+        'message': 'Missing required parameters: query'
       }
     else:
-      if num_urls > count:
-        urls = urls[:count]
-        num_urls = count
-      response = {
-        'status': 200,
-        'message': 'Image search successful!',
-        'num_images': num_urls,
-        'images': urls
-      }
+      num_urls, urls = get_image_urls(query)
+      if num_urls == 0:
+        response = {
+          'status': 200,
+          'message': 'No images found for query "{}"'.format(query)
+        }
+      else:
+        if num_urls > count:
+          urls = urls[:count]
+          num_urls = count
+        response = {
+          'status': 200,
+          'message': 'Image search successful!',
+          'num_images': num_urls,
+          'images': urls
+        }
+  except e:
+    status = 500
+    response = {
+      'status': 500,
+      'message': 'Internal server error',
+      'error': '{}'.format(e)
+    }
   return json.dumps(response), status
